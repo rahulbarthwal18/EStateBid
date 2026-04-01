@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.Extensions.Http;
 using SearchService.Data;
+using SearchService.RequestHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddHttpClient<AuctionServiceHttpClient>
+builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 
 var app = builder.Build();
 
@@ -26,5 +29,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+await DBInitializer.Initialize(app);
 app.Run();
+
+static IAsyncPolicy<HttpResponseMessage> GetPolicy() =>
+    HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryForeverAsync(_=> TimeSpan.FromSeconds(3));

@@ -8,5 +8,5 @@ public class ApplicationDbContext: DbContext
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
     }
-    DbSet<ItemSearch> ItemSearches { get; set; }
+    public DbSet<ItemSearch> SearchProperties { get; set; }
 }
