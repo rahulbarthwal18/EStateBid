@@ -29,7 +29,16 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-await DBInitializer.Initialize(app);
+
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+    await Policy.Handle<TimeoutException>()
+        .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(5))
+        .ExecuteAndCaptureAsync(async () => await DBInitializer.Initialize(app));
+});
+
+//await DBInitializer.Initialize(app);
+
 app.Run();
 
 static IAsyncPolicy<HttpResponseMessage> GetPolicy() =>

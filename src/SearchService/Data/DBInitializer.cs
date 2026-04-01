@@ -12,6 +12,11 @@ public class DBInitializer
 
         await context.Database.MigrateAsync();
 
+        if(context.SearchProperties.Any())
+        {
+            return;
+        }
+
         var auctionService = scope.ServiceProvider.GetRequiredService<AuctionServiceHttpClient>();
         var auctions = await auctionService.GeSearchProperties();
         if(auctions.Count > 0)
