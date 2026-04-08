@@ -1,9 +1,12 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.Extensions.Http;
+using SearchService.Consumers;
 using SearchService.Data;
-using SearchService.RequestHandler;
 using SearchService.Repositories;
+using SearchService.RequestHandler;
+using static MassTransit.Logging.LogCategoryName;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,33 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+
+// IBus (comes under AddSigleton as dependency),
+// IBusControl (to start and stop the bus) (comes under AddSigleton as dependency),
+// IPublishEndpoint (Fanout exchnage used here) (comes under AddScoped as dependency),
+// ISendEndpointProvider (Direct Exchange used here) (comes under AddScoped as dependency)
+builder.Services.AddMassTransit(busConfig =>
+{
+    //Register abstraction services like buses : IBus, IBusControl, IPublishEndpoint, ISendEndpointProvider
+    busConfig.AddActivitiesFromNamespaceContaining<AuctionCreatedConsumer>();
+
+    busConfig.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("mybus",false));
+
+    busConfig.UsingRabbitMq((busContext, factoryConfig) =>
+    {
+        factoryConfig.ReceiveEndpoint("auction-created", receivingConfig =>
+        {
+            receivingConfig.UseMessageRetry(r => r.Interval(5, 5));
+            receivingConfig.ConfigureConsumer<AuctionCreatedConsumer>(busContext);
+        });
+
+        //_transport = new RabbitMQRegistertation(factoryConfig)
+        //var bus = _transport.CreateBus();
+
+        //It wil create topolgy such as queues, exchanges, bindings etc. based on the configuration provided in the consumer and endpoint configuration
+        factoryConfig.ConfigureEndpoints(busContext);
+    });
+});
 
 var app = builder.Build();
 

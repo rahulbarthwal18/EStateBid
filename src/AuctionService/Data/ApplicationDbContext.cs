@@ -1,4 +1,5 @@
 ﻿using AuctionService.Entities;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionService.Data;
@@ -19,5 +20,7 @@ public class ApplicationDbContext : DbContext
             .HasOne(x => x.Property)
             .WithOne(x => x.Auction)
             .HasForeignKey<Property>(x => x.AuctionId);
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
     }
 }

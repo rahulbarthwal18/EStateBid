@@ -12,8 +12,8 @@ using SearchService.Data;
 namespace SearchService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260401175120_Initial")]
-    partial class Initial
+    [Migration("20260408193642_InitalChange")]
+    partial class InitalChange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,5 +1,6 @@
 ﻿using AuctionService.Dtos;
 using AuctionService.Entities;
+using SharedMicro;
 
 namespace AuctionService.Extensions;
 
@@ -67,6 +68,31 @@ public static class MappingExtensions
        auction.Property.Bathrooms = updateAuctionDto.Bathrooms;
        auction.Property.AreaSqFt = updateAuctionDto.AreaSqFt;
        auction.Property.ImageUrl = updateAuctionDto.ImageUrl ?? string.Empty;
+    }
+    public static AuctionCreated ToAuctionCreated(this Auction auction)
+    {
+        return new AuctionCreated
+        {
+            Id = auction.Id,
+            ReservePrice = auction.ReservePrice,
+            Seller = auction.Seller,
+            Winner = auction.Winner,
+            SoldAmount = auction.SoldAmount,
+            CurrentHighBid = auction.CurrentHighBid,
+            CreatedAt = auction.CreatedAt,
+            UpdatedAt = auction.UpdatedAt,
+            AuctionEnd = auction.AuctionEnd,
+            Status = auction.Status.ToString(),
+            Title = auction.Property.Title,
+            Description = auction.Property.Description,
+            Address = auction.Property.Address,
+            City = auction.Property.City,
+            State = auction.Property.State,
+            Bedrooms = auction.Property.Bedrooms,
+            Bathrooms = auction.Property.Bathrooms,
+            AreaSqFt = auction.Property.AreaSqFt,
+            ImageUrl = auction.Property.ImageUrl
+        };
     }
 }
 

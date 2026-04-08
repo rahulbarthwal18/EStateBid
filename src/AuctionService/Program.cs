@@ -1,5 +1,6 @@
 using AuctionService.Data;
 using AuctionService.Repositories;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,33 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
+
+builder.Services.AddMassTransit(busConfig =>
+{
+    busConfig.AddEntityFrameworkOutbox<ApplicationDbContext>(outboxConfig =>
+    {
+        outboxConfig.QueryDelay = TimeSpan.FromSeconds(10);
+        outboxConfig.UseSqlServer();
+        outboxConfig.UseBusOutbox();
+    });
+
+    busConfig.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("mybus-auction", false));
+
+    busConfig.UsingRabbitMq((busContext, factoryConfig) =>
+    {
+        //factoryConfig.ReceiveEndpoint("auction-created", receivingConfig =>
+        //{
+        //    receivingConfig.UseMessageRetry(r => r.Interval(5, 5));
+        //    receivingConfig.ConfigureConsumer<AuctionCreatedConsumer>(busContext);
+        //});
+
+        //_transport = new RabbitMQRegistertation(factoryConfig)
+        //var bus = _transport.CreateBus();
+
+        //It wil create topolgy such as queues, exchanges, bindings etc. based on the configuration provided in the consumer and endpoint configuration
+        factoryConfig.ConfigureEndpoints(busContext);
+    });
+});
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using AuctionService.Dtos;
 using AuctionService.Extensions;
 using AuctionService.Repositories;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ namespace AuctionService.Controllers;
 public class AuctionsController : ControllerBase
 {
     private readonly IAuctionRepository _auctionRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public AuctionsController(IAuctionRepository auctionRepository)
+    public AuctionsController(IAuctionRepository auctionRepository, IPublishEndpoint publishEndpoint)
     {
         _auctionRepository = auctionRepository;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpGet]
@@ -37,7 +40,12 @@ public class AuctionsController : ControllerBase
         var auction = dto.ToAuctionEntity();
          _auctionRepository.AddAuction(auction);
         var results = await _auctionRepository.SaveChangesAsync();
-        if(!results)
+
+        //raise event
+        var auctionCreated = auction.ToAuctionCreated();
+        await _publishEndpoint.Publish(auctionCreated);
+
+        if (!results)
             return BadRequest("Failed to save auction");
         return CreatedAtAction(nameof(GetAuction), new { id = auction.Id }, auction.ToAuctionDto());
     }
