@@ -39,11 +39,11 @@ public class AuctionsController : ControllerBase
     {
         var auction = dto.ToAuctionEntity();
          _auctionRepository.AddAuction(auction);
-        var results = await _auctionRepository.SaveChangesAsync();
 
         //raise event
         var auctionCreated = auction.ToAuctionCreated();
         await _publishEndpoint.Publish(auctionCreated);
+        var results = await _auctionRepository.SaveChangesAsync();
 
         if (!results)
             return BadRequest("Failed to save auction");

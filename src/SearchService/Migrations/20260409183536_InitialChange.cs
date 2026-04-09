@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SearchService.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalChange : Migration
+    public partial class InitialChange : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

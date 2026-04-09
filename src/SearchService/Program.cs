@@ -28,9 +28,9 @@ builder.Services.AddScoped<ISearchRepository, SearchRepository>();
 builder.Services.AddMassTransit(busConfig =>
 {
     //Register abstraction services like buses : IBus, IBusControl, IPublishEndpoint, ISendEndpointProvider
-    busConfig.AddActivitiesFromNamespaceContaining<AuctionCreatedConsumer>();
+    busConfig.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
 
-    busConfig.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("mybus",false));
+    busConfig.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("mybus", false));
 
     busConfig.UsingRabbitMq((busContext, factoryConfig) =>
     {
