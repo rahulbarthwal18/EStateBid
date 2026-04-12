@@ -2,6 +2,7 @@
 using AuctionService.Extensions;
 using AuctionService.Repositories;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,7 @@ public class AuctionsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto dto)
     {
         var auction = dto.ToAuctionEntity();

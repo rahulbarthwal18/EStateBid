@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionService", "src\Aucti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedMicro", "src\SharedMicro\SharedMicro.csproj", "{E895D5ED-2A29-4735-815D-B3B9961DD031}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "src\IdentityService\IdentityService.csproj", "{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{E895D5ED-2A29-4735-815D-B3B9961DD031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E895D5ED-2A29-4735-815D-B3B9961DD031}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E895D5ED-2A29-4735-815D-B3B9961DD031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 		{F1DDD55E-44D2-4260-84C0-4899D1CFD00A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{9DD00416-5327-615F-6AB4-CF9364434F3A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E895D5ED-2A29-4735-815D-B3B9961DD031} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{55FED2AE-C050-7E14-BBF8-48C7A7F1D5BC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C2D3DE7-D0A1-460F-8370-D489AF01CF3E}
