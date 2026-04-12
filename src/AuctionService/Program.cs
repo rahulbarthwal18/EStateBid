@@ -1,3 +1,4 @@
+using AuctionService.Consumers;
 using AuctionService.Data;
 using AuctionService.Repositories;
 using MassTransit;
@@ -16,6 +17,9 @@ builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 
 builder.Services.AddMassTransit(busConfig =>
 {
+    //Added cosumer for fault handling through which we will send acknowledgement to the producer through service bus (Rabbit bus) for any fault in Search Service DB
+    busConfig.AddConsumersFromNamespaceContaining<AuctionCreatedFaultConsumer>();
+
     busConfig.AddEntityFrameworkOutbox<ApplicationDbContext>(outboxConfig =>
     {
         outboxConfig.QueryDelay = TimeSpan.FromSeconds(10);

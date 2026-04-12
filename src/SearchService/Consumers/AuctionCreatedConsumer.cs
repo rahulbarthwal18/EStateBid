@@ -17,6 +17,10 @@ public class AuctionCreatedConsumer : IConsumer<AuctionCreated>
     public async Task Consume(ConsumeContext<AuctionCreated> context)
     {
         var message = context.Message;
+        if(_dbContext.SearchProperties.Any(p => p.Id == message.Id))
+        {
+            return;
+        }
         var itemSearch = new ItemSearch
         {
             Id = message.Id,

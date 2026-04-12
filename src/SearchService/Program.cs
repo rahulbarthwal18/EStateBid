@@ -34,8 +34,16 @@ builder.Services.AddMassTransit(busConfig =>
 
     busConfig.UsingRabbitMq((busContext, factoryConfig) =>
     {
+        factoryConfig.UseMessageRetry(rconfig => {
+            rconfig.Handle<RabbitMqConnectionException>();
+            rconfig.Interval(5, 5);
+            }
+        );
         factoryConfig.ReceiveEndpoint("auction-created", receivingConfig =>
         {
+            //receivingConfig.TrackingPeriod = TimeSpan.FromSeconds(1);
+            //receivingConfig.TripThreshold = 15;
+            //receivingConfig.ActiveThreshold = 10;
             receivingConfig.UseMessageRetry(r => r.Interval(5, 5));
             receivingConfig.ConfigureConsumer<AuctionCreatedConsumer>(busContext);
         });
