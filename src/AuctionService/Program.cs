@@ -52,6 +52,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Authority = builder.Configuration["IdentityServiceBaseURL"];
     });
 
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "Admin"));
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
